@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "Learn Save All Course Notes",
+  "version": "1.0",
+  "description": "Saves all course notes on Learn.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "webRequest",
+    "webNavigation",
+    "notifications",
+    "tabs",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://learn.uwaterloo.ca/*"
+  ],
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://learn.uwaterloo.ca/*"
+      ],
+      "js": [
+        "content.js"
+      ]
+    }
+  ]
+}
