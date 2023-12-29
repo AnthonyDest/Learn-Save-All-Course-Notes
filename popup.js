@@ -10,93 +10,108 @@ document.addEventListener('DOMContentLoaded', function () {
     getCurrentTab().then((tab) => {
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        function: listLiElementsFunction
+        function: iife
       });
     });
   });
-
-  function updateSelectedFolderInfo() {
-    const selectedFolder = baseFolderInput.files[0];
-    selectedFolderInfo.textContent = selectedFolder ? `Selected Folder: ${selectedFolder.path}` : 'No folder selected';
-  }
-
-  function getCurrentTab() {
-    return new Promise((resolve) => {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        resolve(tabs[0]);
-      });
-    });
-  }
 });
 
+function updateSelectedFolderInfo() {
+  const selectedFolder = baseFolderInput.files[0];
+  selectedFolderInfo.textContent = selectedFolder ? `Selected Folder: ${selectedFolder.path}` : 'No folder selected';
+}
 
-function simulateClick(element) {
-  var clickEvent = new Event('click', {
-    bubbles: true,
-    cancelable: true,
-    composed: true
+function getCurrentTab() {
+  return new Promise((resolve) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      resolve(tabs[0]);
+    });
   });
-  element.dispatchEvent(clickEvent);
 }
 
-function list_all_module_content() {
+function iife() {
 
-  var list_elements = document.querySelectorAll('.d2l-datalist .d2l-link')
-
-
-  if (list_elements.length > 0) {
-    // Iterate over each li element
-    list_elements.forEach((element, index) => {
-      // Perform actions on each li element
-      console.log(`List Element_B ${index + 1}:`, element);
-      // element.click();
-      simulateClick(element);
-
-      download_to_pdf()
-
-      // needs a wait here to ensure previous stuff has time to load
-
+  function simulateClick(element) {
+    var clickEvent = new Event('click', {
+      bubbles: true,
+      cancelable: true,
+      composed: true
     });
-  } else {
-    console.log("No elements found.");
+    console.log(clickEvent);
+    element.dispatchEvent(clickEvent);
   }
-}
+  // element = document.querySelectorAll('.d2l-datalist .d2l-link')[0]
+  // simulateClick(element);
 
+  async function wait(seconds) {
+    return new Promise(resolve => {
+      setTimeout(resolve, seconds * 1000);
+    });
+  }
 
-// content.js
-function listLiElementsFunction() {
-  // Select all <li> elements under #D2L_LE_Content_TreeBrowser
-  // aka outer list TOC navigation elements
-  var liElements = document.querySelectorAll("#D2L_LE_Content_TreeBrowser li .d2l-le-TreeAccordionItem-anchor");
+  async function download_to_pdf() {
+    // console.log("download_to_pdf wait 5 seconds");
+    // await wait(5);
+    // console.log("download_to_pdf wait 5 seconds done");
 
-  // Check if there are any li elements
-  if (liElements.length > 0) {
-    // Iterate over each li element
-    liElements.forEach((liElement, index) => {
-      // Perform actions on each li element
-      console.log(`List Element_A ${index + 1}:`, liElement);
-      // liElement.click();
-      simulateClick(liElement);
+    const buttonElement = document.querySelectorAll(".d2l-page-main-padding button")[0];
 
-      list_all_module_content();
+    if (buttonElement) {
+      simulateClick(buttonElement);
+    }
+  }
 
-      if (index === 2) {
-        return; // Stop the program execution
+  async function list_all_module_content() {
+    var list_elements = document.querySelectorAll('.d2l-datalist .d2l-link');
+    console.log(`ALL List Elements_B:`, list_elements);
+
+    if (list_elements.length > 0) {
+      for (const [index, element] of list_elements.entries()) {
+        if (index === 0) {
+          continue;
+        }
+        console.log(`List Element_B ${index + 1}:`, element);
+        simulateClick(element);
+
+        console.log("list_all_module_content wait 5 seconds");
+        await wait(5);
+        console.log("list_all_module_content wait 5 seconds done");
+
+        await download_to_pdf();
       }
-
-      // needs a wait here to ensure previous stuff has time to load
-    });
-  } else {
-    console.log("No li elements found.");
+    } else {
+      console.log("No elements found.");
+    }
   }
+
+  async function handleOuterTOC(liElement, index) {
+    console.log(`List Element_A ${index + 1}:`, liElement);
+    simulateClick(liElement);
+
+    console.log("OUTER TOC wait 5 seconds");
+    await wait(5);
+    console.log("OUTER TOC wait 5 seconds done");
+
+    await list_all_module_content();
+
+    if (index === 2) {
+      return;
+    }
+  }
+
+  // content.js
+  (async () => {
+    var liElements = document.querySelectorAll("#D2L_LE_Content_TreeBrowser li .d2l-le-TreeAccordionItem-anchor");
+    console.log(liElements)
+    if (liElements.length > 0) {
+      for (const [index, liElement] of liElements.entries()) {
+        if (index === 0) {
+          continue;
+        }
+        await handleOuterTOC(liElement, index);
+      }
+    } else {
+      console.log("No li elements found.");
+    }
+  })();
 }
-
-
-
-
-function download_to_pdf() {
-
-  document.querySelectorAll(".d2l-page-main-padding button")[0].click()
-
-}
-

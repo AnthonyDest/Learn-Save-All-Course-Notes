@@ -1,13 +1,15 @@
 # Learn Save All Course Notes
 
-This program will download all course notes from learn
+Learn Save All Course Notes will download all course notes from a current enrolled class on UWaterloo's Learn, a web-based learning management system.  
+
+This program was developed when the "download all" course notes button had issues properly downloading all files. As the download functionally has since returned, the project is left in a mostly completed state with minor formatting, sequential download, and unit testing remaining.
 
 ## Setup
 
 ### 1a. Clone the Repository:
 
 - Open a terminal or command prompt.
-- Run: `git clone https://github.com/AnthonyDest/YouTube-Ad-Skip.git`
+- Run: `git clone https://github.com/AnthonyDest/Learn-Save-All-Course-Notes.git`
 
 ### OR
 
@@ -17,10 +19,10 @@ This program will download all course notes from learn
 - Select "Download ZIP."
 - Extract the ZIP file to your preferred location.
 
-### 2. Load the Extension in Chrome:
+### 2. Allow Local Extensions in Chrome:
 
 - Open Google Chrome.
-- Type `chrome://extensions/` in the address bar and press Enter.
+- Type `chrome://extensions/` in the address bar and press **Enter** (Chrome prevents hyperlinking the extensions page).
 - Enable "Developer mode" using the toggle switch in the top-right corner.
 
 ### 3. Load the Extension:
@@ -28,7 +30,11 @@ This program will download all course notes from learn
 - Click the "Load unpacked" button.
 - Select the folder where you cloned the GitHub repository or extracted the ZIP file.
 
-### 4. TBD
+### 4. Run the Extension
+- Go to the Learn course content homepage.
+- Click the chrome extension, select the base location to save the course notes.
+- Click on "download" and the script will begin running semi-automatically.
+- A popup for each Learn page will automatically appear, press "download" or **Enter** on each popup to save all course content.
 
 ## Disclaimer
 
